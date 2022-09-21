@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: Vlad Peltikhin
+      comment: Initial database script from pgAdmin4 ERD Tool
+      changes:
+        - sqlFile:
+            path: initial_script.sql
+            relativeToChangelogFile: true
