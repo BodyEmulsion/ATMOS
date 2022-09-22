@@ -2,3 +2,6 @@ databaseChangeLog:
   - include:
       file: changesets/0.1.0/initial.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changesets/0.1.1/fixIdsAndDateInNotifications.yaml
+      relativeToChangelogFile: true

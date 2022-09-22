@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Vlad Peltikhin
+      comment: Fix id properties in all tables, and delete redundant date property in notifications table
+      changes:
+        - sqlFile:
+            path: id_fix.sql
+            relativeToChangelogFile: true
+        - sqlFile:
+            path: date_fix.sql
+            relativeToChangelogFile: true
