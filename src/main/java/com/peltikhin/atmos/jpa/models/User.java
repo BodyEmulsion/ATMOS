@@ -15,6 +15,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //TODO make username unique or come up with a better way to find users in authorization process
     private String username;
     private String password;
     @OneToMany(mappedBy = "user")
