@@ -1,7 +1,7 @@
 package com.peltikhin.atmos.auth;
 
 import com.peltikhin.atmos.jpa.repositories.UserRepository;
-import com.peltikhin.atmos.services.models.CurrentUserInfo;
+import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -66,15 +66,15 @@ public class SecurityConfiguration {
 
     @Bean
     @RequestScope
-    public CurrentUserInfo currentUserInfo() {
+    public UserInfo currentUserInfo() {
         var authorization = SecurityContextHolder.getContext().getAuthentication();
-        CurrentUserInfo currentUserInfo = new CurrentUserInfo();
+        UserInfo currentUser = new UserInfo();
         if (authorization != null) {
             var principal = authorization.getPrincipal();
             if (principal instanceof AuthUser authUser)
-                currentUserInfo.fromAuthUser(authUser);
+                currentUser.fromAuthUser(authUser);
         }
-        return currentUserInfo;
+        return currentUser;
     }
 
 }
