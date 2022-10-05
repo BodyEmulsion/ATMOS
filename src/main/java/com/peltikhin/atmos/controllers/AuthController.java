@@ -1,13 +1,14 @@
 package com.peltikhin.atmos.controllers;
 
+import com.peltikhin.atmos.controllers.dto.RegisterDto;
 import com.peltikhin.atmos.controllers.dto.UserDto;
 import com.peltikhin.atmos.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -27,11 +28,9 @@ public class AuthController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    //TODO change method signature to RegisterUser in order to declarative validate input data
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestParam("username") String username,
-                                            @RequestParam("password") String password) {
-        var user = this.authService.register(username, password);
+    public ResponseEntity<UserDto> register(@RequestBody RegisterDto registerDto) {
+        var user = this.authService.register(registerDto.getUsername(), registerDto.getPassword());
         //TODO Add exception handling after adding validation
         return new ResponseEntity<>(new UserDto(user), HttpStatus.OK);
     }
