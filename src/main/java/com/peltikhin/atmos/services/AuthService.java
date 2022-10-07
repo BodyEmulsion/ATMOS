@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
     private final UserRepository userRepository;
@@ -20,8 +22,15 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserInfo getCurrentUser() {
+    public UserInfo getCurrentUserInfo() {
         return this.userInfo;
+    }
+
+    public User getCurrentUser() {
+        Optional<User> result = this.userRepository.findById(this.userInfo.getId());
+        if (result.isEmpty())
+            throw new NonExistentUserDoingThings("It isn't possible!");
+        return result.get();
     }
 
     public UserInfo register(String username, String password) {

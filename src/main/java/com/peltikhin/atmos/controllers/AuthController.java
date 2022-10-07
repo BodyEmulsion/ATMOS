@@ -6,10 +6,7 @@ import com.peltikhin.atmos.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController()
@@ -22,9 +19,9 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @RequestMapping("/check")
+    @RequestMapping(path = "/check", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<UserDto> getCurrentUser() {
-        UserDto user = new UserDto(authService.getCurrentUser());
+        UserDto user = new UserDto(authService.getCurrentUserInfo());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
