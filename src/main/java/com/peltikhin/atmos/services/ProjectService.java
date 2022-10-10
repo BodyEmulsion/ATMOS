@@ -15,7 +15,7 @@ public class ProjectService {
     private AuthService authService;
 
     private static boolean isProjectBelongToUser(Project project, UserInfo currentUser) {
-        return !currentUser.getId().equals(project.getUser().getId());
+        return currentUser.getId().equals(project.getUser().getId());
     }
 
     public Project getProjectById(Long id) {
@@ -33,7 +33,7 @@ public class ProjectService {
 
     private void validateUserAuthority(Project project) {
         UserInfo userInfo = this.authService.getCurrentUserInfo();
-        if (isProjectBelongToUser(project, userInfo))
+        if (!isProjectBelongToUser(project, userInfo))
             throw new NotEnoughAuthoritiesExceprion("Project does not belong to user");
     }
 
