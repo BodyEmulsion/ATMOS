@@ -2,6 +2,8 @@ package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.Block;
 import com.peltikhin.atmos.jpa.repositories.BlockRepository;
+import com.peltikhin.atmos.services.exceptions.BlockNotFoundException;
+import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
 import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,7 +66,7 @@ public class BlockService {
     private void validateUserAuthority(Block block) {
         UserInfo userInfo = this.authService.getCurrentUserInfo();
         if (!isBlockBelongToUser(block, userInfo))
-            throw new NotEnoughAuthoritiesExceprion("Block does not belong to user");
+            throw new NotEnoughAuthoritiesException("Block does not belong to user");
     }
 
     private boolean isBlockBelongToUser(Block block, UserInfo userInfo) {

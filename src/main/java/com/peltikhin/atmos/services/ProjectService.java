@@ -3,6 +3,8 @@ package com.peltikhin.atmos.services;
 import com.peltikhin.atmos.jpa.models.Project;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.ProjectRepository;
+import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
+import com.peltikhin.atmos.services.exceptions.ProjectNotFoundException;
 import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class ProjectService {
     private void validateUserAuthority(Project project) {
         UserInfo userInfo = this.authService.getCurrentUserInfo();
         if (!isProjectBelongToUser(project, userInfo))
-            throw new NotEnoughAuthoritiesExceprion("Project does not belong to user");
+            throw new NotEnoughAuthoritiesException("Project does not belong to user");
     }
 
     public Project createProject(String projectName) {

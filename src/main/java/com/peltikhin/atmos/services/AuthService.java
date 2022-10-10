@@ -2,6 +2,7 @@ package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.UserRepository;
+import com.peltikhin.atmos.services.exceptions.NonExistentUserDoingThings;
 import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
