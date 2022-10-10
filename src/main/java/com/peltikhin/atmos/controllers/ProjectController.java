@@ -7,11 +7,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/project")
 public class ProjectController {
     @Autowired
     private ProjectService projectService;
+
+    @GetMapping()
+    ResponseEntity<List<ProjectDto>> getAllProjects() {
+        List<ProjectDto> result = this.projectService.getAllProjects().stream()
+                .map(ProjectDto::new)
+                .collect(Collectors.toList());
+        //ToList() method didn't found dy IDE somehow, and I don't have time to deal with it. I'm really sorry, Sonarlint
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     ResponseEntity<ProjectDto> getProjectById(@PathVariable("id") Long id) {

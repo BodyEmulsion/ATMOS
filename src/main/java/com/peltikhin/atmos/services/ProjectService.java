@@ -7,6 +7,8 @@ import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class ProjectService {
     @Autowired
@@ -59,5 +61,10 @@ public class ProjectService {
         Project project = tryToGetProject(id);
         validateUserAuthority(project);
         this.projectRepository.delete(project);
+    }
+
+    public Collection<Project> getAllProjects() {
+        var user = this.authService.getCurrentUser();
+        return this.projectRepository.findByUser(user);
     }
 }
