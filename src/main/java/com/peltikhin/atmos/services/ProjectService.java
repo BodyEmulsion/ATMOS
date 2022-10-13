@@ -5,7 +5,6 @@ import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.ProjectRepository;
 import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
 import com.peltikhin.atmos.services.exceptions.ProjectNotFoundException;
-import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,8 @@ public class ProjectService {
     @Autowired
     private AuthService authService;
 
-    private static boolean isProjectBelongToUser(Project project, UserInfo currentUser) {
-        return currentUser.getId().equals(project.getUser().getId());
+    private static boolean isProjectBelongToUser(Project project, User user) {
+        return user.getId().equals(project.getUser().getId());
     }
 
     public Project getProjectById(Long id) {
@@ -35,9 +34,10 @@ public class ProjectService {
         return result.get();
     }
 
+    //TODO Move validation in another class?
     private void validateUserAuthority(Project project) {
-        UserInfo userInfo = this.authService.getCurrentUserInfo();
-        if (!isProjectBelongToUser(project, userInfo))
+        User user = this.authService.getCurrentUser();
+        if (!isProjectBelongToUser(project, user))
             throw new NotEnoughAuthoritiesException("Project does not belong to user");
     }
 
@@ -67,6 +67,7 @@ public class ProjectService {
 
     public Collection<Project> getAllProjects() {
         var user = this.authService.getCurrentUser();
+        //TODO make sure that it's ok, because I think I should be able to read it from user entity, but It requires to refresh entity by EntityManager
         return this.projectRepository.findByUser(user);
     }
 }

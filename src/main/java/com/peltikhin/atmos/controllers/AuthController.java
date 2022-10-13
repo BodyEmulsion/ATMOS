@@ -21,7 +21,7 @@ public class AuthController {
 
     @RequestMapping(path = "/check", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<UserDto> getCurrentUser() {
-        UserDto user = new UserDto(authService.getCurrentUserInfo());
+        UserDto user = new UserDto(authService.getCurrentUser());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

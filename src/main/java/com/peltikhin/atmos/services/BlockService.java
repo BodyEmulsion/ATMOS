@@ -1,10 +1,10 @@
 package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.Block;
+import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.BlockRepository;
 import com.peltikhin.atmos.services.exceptions.BlockNotFoundException;
 import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
-import com.peltikhin.atmos.services.models.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,14 +63,15 @@ public class BlockService {
         return result.get();
     }
 
+    //TODO Move validation in another class?
     private void validateUserAuthority(Block block) {
-        UserInfo userInfo = this.authService.getCurrentUserInfo();
-        if (!isBlockBelongToUser(block, userInfo))
+        User user = this.authService.getCurrentUser();
+        if (!isBlockBelongToUser(block, user))
             throw new NotEnoughAuthoritiesException("Block does not belong to user");
     }
 
-    private boolean isBlockBelongToUser(Block block, UserInfo userInfo) {
-        return userInfo.getId().equals(block.getProject().getUser().getId());
+    private static boolean isBlockBelongToUser(Block block, User user) {
+        return user.getId().equals(block.getProject().getUser().getId());
     }
 
     public void deleteBlock(Long id) {

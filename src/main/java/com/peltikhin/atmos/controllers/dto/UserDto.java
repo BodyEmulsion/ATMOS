@@ -1,6 +1,6 @@
 package com.peltikhin.atmos.controllers.dto;
 
-import com.peltikhin.atmos.services.models.UserInfo;
+import com.peltikhin.atmos.jpa.models.User;
 import lombok.*;
 
 import java.util.Objects;
@@ -14,9 +14,9 @@ public class UserDto {
     private Long id;
     private String username;
 
-    public UserDto(UserInfo userInfo) {
-        this.id = userInfo.getId();
-        this.username = userInfo.getUsername();
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
     }
 
     @Override

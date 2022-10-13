@@ -1,35 +1,76 @@
 package com.peltikhin.atmos.auth;
 
 import com.peltikhin.atmos.jpa.models.User;
-import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 
-@Getter
-public class AuthUser extends org.springframework.security.core.userdetails.User {
-    private final Long id;
+public class AuthUser implements UserDetails {
+    private final User user;
+    //This SonarLint issue doesn't react when I did what it recommended, and all works without that changes. I don't know what's wrong, and I did tired of figuring it up
+    private final boolean authenticated;
 
     public AuthUser(User user) {
-        super(user.getUsername(), user.getPassword(), new HashSet<>());
-        this.id = user.getId();
+        this.user = user;
+        this.authenticated = true;
+    }
+
+    public AuthUser() {
+        this.user = new User();
+        this.authenticated = false;
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        AuthUser that = (AuthUser) o;
-
-        return Objects.equals(id, that.id);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new HashSet<>();
     }
 
     @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (id != null ? id.hashCode() : 0);
-        return result;
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + user.getId() +
+                ", username='" + user.getUsername() + '\'' +
+                ", password='" + user.getPassword() + '\'' +
+                '}';
     }
 }
