@@ -4,7 +4,6 @@ import com.peltikhin.atmos.jpa.models.Project;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.ProjectRepository;
 import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
-import com.peltikhin.atmos.services.exceptions.ProjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +21,9 @@ public class ProjectService {
     }
 
     public Project getProjectById(Long id) {
-        Project project = tryToGetProject(id);
+        Project project = this.projectRepository.findByIdOrError(id);
         validateUserAuthority(project);
         return project;
-    }
-
-    private Project tryToGetProject(Long id) {
-        var result = this.projectRepository.findById(id);
-        if (result.isEmpty())
-            throw new ProjectNotFoundException(id);
-        return result.get();
     }
 
     //TODO Move validation in another class?
@@ -53,14 +45,14 @@ public class ProjectService {
 
     public Project updateProject(Long projectId, String name) {
         //TODO Change method signature to Project or something else when project updation will require more atributes
-        var project = tryToGetProject(projectId);
+        var project = this.projectRepository.findByIdOrError(projectId);
         project.setName(name);
         validateUserAuthority(project);
         return this.projectRepository.save(project);
     }
 
     public void deleteProject(Long id) {
-        Project project = tryToGetProject(id);
+        Project project = this.projectRepository.findByIdOrError(id);
         validateUserAuthority(project);
         this.projectRepository.delete(project);
     }

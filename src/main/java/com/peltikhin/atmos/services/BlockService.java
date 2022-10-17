@@ -3,7 +3,6 @@ package com.peltikhin.atmos.services;
 import com.peltikhin.atmos.jpa.models.Block;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.BlockRepository;
-import com.peltikhin.atmos.services.exceptions.BlockNotFoundException;
 import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +19,12 @@ public class BlockService {
     @Autowired
     private ProjectService projectService;
 
+    private static boolean isBlockBelongToUser(Block block, User user) {
+        return user.getId().equals(block.getProject().getUser().getId());
+    }
 
     public Block getBlockById(Long id) {
-        Block block = tryToGetBlock(id);
+        Block block = this.blockRepository.findByIdOrError(id);
         validateUserAuthority(block);
         return block;
     }
@@ -48,19 +50,12 @@ public class BlockService {
     }
 
     public Block updateBlock(Long id, Long projectId, Date timeStart, Date timeEnd) {
-        Block block = tryToGetBlock(id);
+        Block block = this.blockRepository.findByIdOrError(id);
         validateUserAuthority(block);
         block.setProject(this.projectService.getProjectById(projectId));
         block.setTimeStart(timeStart);
         block.setTimeEnd(timeEnd);
         return this.blockRepository.save(block);
-    }
-
-    private Block tryToGetBlock(Long id) {
-        var result = this.blockRepository.findById(id);
-        if (result.isEmpty())
-            throw new BlockNotFoundException(id);
-        return result.get();
     }
 
     //TODO Move validation in another class?
@@ -70,12 +65,8 @@ public class BlockService {
             throw new NotEnoughAuthoritiesException("Block does not belong to user");
     }
 
-    private static boolean isBlockBelongToUser(Block block, User user) {
-        return user.getId().equals(block.getProject().getUser().getId());
-    }
-
     public void deleteBlock(Long id) {
-        var block = tryToGetBlock(id);
+        var block = this.blockRepository.findByIdOrError(id);
         validateUserAuthority(block);
         this.blockRepository.delete(block);
     }
