@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: Vlad Peltikhin
+      comment: Fix block id column in tasks table
+      changes:
+        - sqlFile:
+            path: fix_not_null.sql
+            relativeToChangelogFile: true

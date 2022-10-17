@@ -1,0 +1,1 @@
+ALTER TABLE tasks ALTER COLUMN block_id DROP NOT NULL;
