@@ -30,7 +30,7 @@ public class ProjectService {
     private Project tryToGetProject(Long id) {
         var result = this.projectRepository.findById(id);
         if (result.isEmpty())
-            throw new ProjectNotFoundException(String.format("Project with id=%d not found", id));
+            throw new ProjectNotFoundException(id);
         return result.get();
     }
 
