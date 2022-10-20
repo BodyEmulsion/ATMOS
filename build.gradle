@@ -31,6 +31,8 @@ dependencies {
 	testImplementation 'org.testcontainers:postgresql:1.17.3'
 	testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+	implementation "org.mapstruct:mapstruct:1.4.2.Final"
+	annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
 }
 
 tasks.named('test') {

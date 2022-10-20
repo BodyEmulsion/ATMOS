@@ -1,6 +1,7 @@
 package com.peltikhin.atmos.controllers;
 
 import com.peltikhin.atmos.controllers.dto.NotificationDto;
+import com.peltikhin.atmos.controllers.mappers.NotificationMapper;
 import com.peltikhin.atmos.services.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,22 +15,24 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/notification")
 public class NotificationController {
     private final NotificationService notificationService;
+    private final NotificationMapper notificationMapper;
 
-    public NotificationController(NotificationService notificationService) {
+    public NotificationController(NotificationService notificationService, NotificationMapper notificationMapper) {
         this.notificationService = notificationService;
+        this.notificationMapper = notificationMapper;
     }
 
     @GetMapping
     public ResponseEntity<Collection<NotificationDto>> getNotifications(@RequestParam Long taskId){
         Collection<NotificationDto> notifications = this.notificationService.getNotificationsByTaskId(taskId).stream()
-                .map(NotificationDto::new)
+                .map(notificationMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(notifications);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<NotificationDto> getNotification(@PathVariable Long id){
-        NotificationDto notification = new NotificationDto(this.notificationService.getNotification(id));
+        NotificationDto notification = notificationMapper.toDto(this.notificationService.getNotification(id));
         return ResponseEntity.ok(notification);
     }
 
@@ -39,20 +42,20 @@ public class NotificationController {
         //TODO Rewrite it, and come up with timezones?
         Date before = Date.from(Instant.ofEpochMilli(untilDate));
         Collection<NotificationDto> notifications = this.notificationService.getNearNotifications(before).stream()
-                .map(NotificationDto::new)
+                .map(notificationMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(notifications);
     }
 
     @PostMapping
     public ResponseEntity<NotificationDto> createNotification(@RequestBody NotificationDto notificationDto){
-        NotificationDto notification = new NotificationDto(this.notificationService.createNotification(notificationDto));
+        NotificationDto notification = notificationMapper.toDto(this.notificationService.createNotification(notificationDto));
         return ResponseEntity.ok(notification);
     }
 
     @PutMapping
     public ResponseEntity<NotificationDto> updateNotification(@RequestBody NotificationDto notificationDto){
-        NotificationDto notification = new NotificationDto(this.notificationService.updateNotification(notificationDto));
+        NotificationDto notification = notificationMapper.toDto(this.notificationService.updateNotification(notificationDto));
         return ResponseEntity.ok(notification);
     }
 
