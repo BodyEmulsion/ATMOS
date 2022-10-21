@@ -11,7 +11,7 @@ import java.util.Collection;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public class Project implements OwnerIdProvider{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +19,15 @@ public class Project {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    @Column(name = "user_id", nullable = false, updatable = false, insertable = false)
+    private Long userId;
     @OneToMany(mappedBy = "project")
     private Collection<Block> blocks;
     @OneToMany(mappedBy = "project")
     private Collection<Task> tasks;
+
+    @Override
+    public Long getOwnerId() {
+        return userId;
+    }
 }

@@ -11,7 +11,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
+public class Notification implements OwnerIdProvider{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,4 +20,9 @@ public class Notification {
     private Task task;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date time;
+
+    @Override
+    public Long getOwnerId() {
+        return task.getProject().getUserId();
+    }
 }

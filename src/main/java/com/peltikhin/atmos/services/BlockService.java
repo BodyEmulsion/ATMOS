@@ -1,10 +1,7 @@
 package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.Block;
-import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.BlockRepository;
-import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -12,20 +9,21 @@ import java.util.Date;
 
 @Service
 public class BlockService {
-    @Autowired
-    private BlockRepository blockRepository;
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private ProjectService projectService;
+    private final BlockRepository blockRepository;
+    private final AuthService authService;
+    private final ProjectService projectService;
+    private final ValidationService validationService;
 
-    private static boolean isBlockBelongToUser(Block block, User user) {
-        return user.getId().equals(block.getProject().getUser().getId());
+    public BlockService(BlockRepository blockRepository, AuthService authService, ProjectService projectService, ValidationService validationService) {
+        this.blockRepository = blockRepository;
+        this.authService = authService;
+        this.projectService = projectService;
+        this.validationService = validationService;
     }
 
     public Block getBlockById(Long id) {
         Block block = this.blockRepository.findByIdOrError(id);
-        validateUserAuthority(block);
+        validationService.validateUserAuthority(block);
         return block;
     }
 
@@ -51,23 +49,16 @@ public class BlockService {
 
     public Block updateBlock(Long id, Long projectId, Date timeStart, Date timeEnd) {
         Block block = this.blockRepository.findByIdOrError(id);
-        validateUserAuthority(block);
+        validationService.validateUserAuthority(block);
         block.setProject(this.projectService.getProjectById(projectId));
         block.setTimeStart(timeStart);
         block.setTimeEnd(timeEnd);
         return this.blockRepository.save(block);
     }
 
-    //TODO Move validation in another class?
-    private void validateUserAuthority(Block block) {
-        User user = this.authService.getCurrentUser();
-        if (!isBlockBelongToUser(block, user))
-            throw new NotEnoughAuthoritiesException("Block does not belong to user");
-    }
-
     public void deleteBlock(Long id) {
         var block = this.blockRepository.findByIdOrError(id);
-        validateUserAuthority(block);
+        validationService.validateUserAuthority(block);
         this.blockRepository.delete(block);
     }
 }

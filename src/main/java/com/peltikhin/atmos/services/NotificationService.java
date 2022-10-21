@@ -5,7 +5,6 @@ import com.peltikhin.atmos.jpa.models.Notification;
 import com.peltikhin.atmos.jpa.models.Task;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.NotificationRepository;
-import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -17,11 +16,13 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final TaskService taskService;
     private final AuthService authService;
+    private final ValidationService validationService;
 
-    public NotificationService(NotificationRepository notificationRepository, TaskService taskService, AuthService authService) {
+    public NotificationService(NotificationRepository notificationRepository, TaskService taskService, AuthService authService, ValidationService validationService) {
         this.notificationRepository = notificationRepository;
         this.taskService = taskService;
         this.authService = authService;
+        this.validationService = validationService;
     }
 
     public Collection<Notification> getNotificationsByTaskId(Long taskId) {
@@ -30,18 +31,8 @@ public class NotificationService {
 
     public Notification getNotification(Long notificationId) {
         Notification notification = notificationRepository.findByIdOrError(notificationId);
-        validateUserAuthority(notification);
+        validationService.validateUserAuthority(notification);
         return notification;
-    }
-
-    private void validateUserAuthority(Notification notification) {
-        User currentUser = authService.getCurrentUser();
-        if (!isNotificationBelongToUser(notification, currentUser))
-            throw new NotEnoughAuthoritiesException("Notification doesn't belong to user");
-    }
-
-    private static boolean isNotificationBelongToUser(Notification notification, User currentUser) {
-        return notification.getTask().getProject().getUser().getId().equals(currentUser.getId());
     }
 
     public Collection<Notification> getNearNotifications(Date before) {

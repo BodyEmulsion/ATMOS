@@ -3,34 +3,26 @@ package com.peltikhin.atmos.services;
 import com.peltikhin.atmos.jpa.models.Project;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.ProjectRepository;
-import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
 public class ProjectService {
-    @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired
-    private AuthService authService;
+    private final ProjectRepository projectRepository;
+    private final AuthService authService;
+    private final ValidationService validationService;
 
-    private static boolean isProjectBelongToUser(Project project, User user) {
-        return user.getId().equals(project.getUser().getId());
+    public ProjectService(ProjectRepository projectRepository, AuthService authService, ValidationService validationService) {
+        this.projectRepository = projectRepository;
+        this.authService = authService;
+        this.validationService = validationService;
     }
 
     public Project getProjectById(Long id) {
         Project project = this.projectRepository.findByIdOrError(id);
-        validateUserAuthority(project);
+        validationService.validateUserAuthority(project);
         return project;
-    }
-
-    //TODO Move validation in another class?
-    private void validateUserAuthority(Project project) {
-        User user = this.authService.getCurrentUser();
-        if (!isProjectBelongToUser(project, user))
-            throw new NotEnoughAuthoritiesException("Project does not belong to user");
     }
 
     public Project createProject(String projectName) {
@@ -47,13 +39,13 @@ public class ProjectService {
         //TODO Change method signature to Project or something else when project updation will require more atributes
         var project = this.projectRepository.findByIdOrError(projectId);
         project.setName(name);
-        validateUserAuthority(project);
+        validationService.validateUserAuthority(project);
         return this.projectRepository.save(project);
     }
 
     public void deleteProject(Long id) {
         Project project = this.projectRepository.findByIdOrError(id);
-        validateUserAuthority(project);
+        validationService.validateUserAuthority(project);
         this.projectRepository.delete(project);
     }
 

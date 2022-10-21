@@ -12,7 +12,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class Task implements OwnerIdProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,5 +43,10 @@ public class Task {
     public void  unplan(){
         this.block = null;
         this.planned = false;
+    }
+
+    @Override
+    public Long getOwnerId() {
+        return project.getUserId();
     }
 }
