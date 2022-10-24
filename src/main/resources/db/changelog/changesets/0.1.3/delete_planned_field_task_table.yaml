@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: Vlad Peltikhin
+      comment: Delete "planned" field from table "tasks"
+      changes:
+        - sqlFile:
+            path: delete_planned_field_task_table.sql
+            relativeToChangelogFile: true

@@ -16,6 +16,9 @@ public class TaskDto {
     private String name;
     private Long projectId;
     private Long blockId;
-    private Boolean planned;
     private Date created;
+
+    public boolean isPlanned(){
+        return blockId != null;
+    }
 }

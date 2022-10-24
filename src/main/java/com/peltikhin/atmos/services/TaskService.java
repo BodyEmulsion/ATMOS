@@ -41,31 +41,36 @@ public class TaskService {
                 .project(projectService.getProjectById(taskDto.getProjectId()))
                 .created(Date.from(Instant.now()))
                 .build();
-        if (taskDto.getBlockId() != null) {
-            task.plan(blockService.getBlockById(taskDto.getBlockId()));
-        } else {
-            task.unplan();
+        if (taskDto.isPlanned()) {
+            task.setBlock(blockService.getBlockById(taskDto.getBlockId()));
         }
         //Somehow it's return Task with projectId null
         return taskRepository.save(task);
     }
 
     //TODO change the argument to another class in order to reduce terrible coupling that I made here
-    //TODO Optimize it somehow, there is too much requests
-    public Task updateTask(TaskDto taskDto) {
-        var task = taskRepository.findByIdOrError(taskDto.getId());
+    public Task updateTask(TaskDto updateTaskData) {
+        var task = taskRepository.findByIdOrError(updateTaskData.getId());
         validationService.validateUserAuthority(task);
-        task.setName(taskDto.getName());
-        if (!task.getProjectId().equals(taskDto.getProjectId()))
-            task.setProject(projectService.getProjectById(taskDto.getProjectId()));
-        if (taskDto.getBlockId() != null && task.getBlockId() != null && !task.getBlockId().equals(taskDto.getBlockId())) {
-            if (taskDto.getBlockId() != null) {
-                task.plan(blockService.getBlockById(taskDto.getBlockId()));
-            } else {
-                task.unplan();
-            }
-        }
+        task.setName(updateTaskData.getName());
+        if (!task.getProjectId().equals(updateTaskData.getProjectId()))
+            task.setProject(projectService.getProjectById(updateTaskData.getProjectId()));
+        updateTaskBlockIfNeeded(task, updateTaskData);
         return taskRepository.save(task);
+    }
+
+    //TODO It may be simplified(to one line...) by making block_id field updatable and insertable, I think
+    private void updateTaskBlockIfNeeded(Task task, TaskDto updateTaskData) {
+        boolean taskShouldBePlanned = updateTaskData.isPlanned();
+        boolean taskIsPlannedNow = task.isPlanned();
+        boolean taskPlannedAndNotEqual =
+                taskShouldBePlanned &&
+                taskIsPlannedNow &&
+                !task.getBlockId().equals(updateTaskData.getBlockId());
+        if(taskPlannedAndNotEqual || taskShouldBePlanned && !taskIsPlannedNow)
+            task.setBlock(blockService.getBlockById(updateTaskData.getBlockId()));
+        if(!taskShouldBePlanned && taskIsPlannedNow)
+            task.setBlock(null);
     }
 
     public void deleteTask(Long taskId) {
