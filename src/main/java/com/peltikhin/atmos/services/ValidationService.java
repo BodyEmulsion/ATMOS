@@ -19,6 +19,7 @@ public class ValidationService {
 
     public void validateUserAuthority(OwnerIdProvider entity) {
         var user = authService.getCurrentUser();
+        //TODO specify entity type in exception in order to geting more understandable messages
         if (!isTaskBelongToUser(entity, user))
             throw new NotEnoughAuthoritiesException("Entity doesn't belong to user");
     }
