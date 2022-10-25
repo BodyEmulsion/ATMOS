@@ -2,7 +2,6 @@ package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.controllers.dto.NotificationDto;
 import com.peltikhin.atmos.jpa.models.Notification;
-import com.peltikhin.atmos.jpa.models.Task;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.NotificationRepository;
 import org.springframework.stereotype.Service;
@@ -50,16 +49,15 @@ public class NotificationService {
     }
 
     public Notification updateNotification(NotificationDto notificationDto) {
-        Notification notification = notificationRepository.findByIdOrError(notificationDto.getId());
+        Notification notification = getNotification(notificationDto.getId());
         notification.setTime(notificationDto.getTime());
-        //TODO Optimize it:
-        Task task = taskService.getTaskById(notificationDto.getTaskId());
-        notification.setTask(task);
+        if (!notificationDto.getTaskId().equals(notification.getTaskId())) {
+            notification.setTask(taskService.getTaskById(notificationDto.getTaskId()));
+        }
         return notificationRepository.save(notification);
     }
 
     public void deleteNotification(Long id) {
-        //TODO test it:
-        notificationRepository.delete(this.getNotification(id));
+        notificationRepository.delete(getNotification(id));
     }
 }

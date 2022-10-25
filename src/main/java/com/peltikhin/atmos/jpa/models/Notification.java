@@ -18,6 +18,8 @@ public class Notification implements OwnerIdProvider{
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
+    @Column(name = "task_id", nullable = false, updatable = false, insertable = false)
+    private Long taskId;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date time;
 
