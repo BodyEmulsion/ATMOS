@@ -1,6 +1,5 @@
 package com.peltikhin.atmos.services;
 
-import com.peltikhin.atmos.controllers.dto.NotificationDto;
 import com.peltikhin.atmos.jpa.models.Notification;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.NotificationRepository;
@@ -40,19 +39,19 @@ public class NotificationService {
         return notificationRepository.findAllByTask_Project_UserAndTimeBetween(user, after, before);
     }
 
-    public Notification createNotification(NotificationDto notificationDto) {
+    public Notification createNotification(Long taskId, Date time) {
         Notification notification = Notification.builder()
-                .task(taskService.getTaskById(notificationDto.getTaskId()))
-                .time(notificationDto.getTime())
+                .task(taskService.getTaskById(taskId))
+                .time(time)
                 .build();
         return this.notificationRepository.save(notification);
     }
 
-    public Notification updateNotification(NotificationDto notificationDto) {
-        Notification notification = getNotification(notificationDto.getId());
-        notification.setTime(notificationDto.getTime());
-        if (!notificationDto.getTaskId().equals(notification.getTaskId())) {
-            notification.setTask(taskService.getTaskById(notificationDto.getTaskId()));
+    public Notification updateNotification(Long id, Date time, Long taskId) {
+        Notification notification = getNotification(id);
+        notification.setTime(time);
+        if (!taskId.equals(notification.getTaskId())) {
+            notification.setTask(taskService.getTaskById(taskId));
         }
         return notificationRepository.save(notification);
     }

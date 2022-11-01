@@ -1,20 +1,20 @@
 package com.peltikhin.atmos.services;
 
-import com.peltikhin.atmos.auth.AuthUser;
+import com.peltikhin.atmos.auth.PasswordEncoderService;
+import com.peltikhin.atmos.auth.UserProvider;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthUser user;
+    private final PasswordEncoderService passwordEncoder;
+    private final UserProvider user;
 
     @Autowired
-    public AuthService(AuthUser user, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserProvider user, UserRepository userRepository, PasswordEncoderService passwordEncoder) {
         this.user = user;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

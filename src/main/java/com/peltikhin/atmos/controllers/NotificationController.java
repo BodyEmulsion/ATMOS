@@ -49,13 +49,15 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<NotificationDto> createNotification(@RequestBody NotificationDto notificationDto){
-        NotificationDto notification = notificationMapper.toDto(this.notificationService.createNotification(notificationDto));
+        NotificationDto notification = notificationMapper.toDto(
+                this.notificationService.createNotification(notificationDto.getTaskId(), notificationDto.getTime()));
         return ResponseEntity.ok(notification);
     }
 
     @PutMapping
     public ResponseEntity<NotificationDto> updateNotification(@RequestBody NotificationDto notificationDto){
-        NotificationDto notification = notificationMapper.toDto(this.notificationService.updateNotification(notificationDto));
+        NotificationDto notification = notificationMapper.toDto(
+                this.notificationService.updateNotification(notificationDto.getId(), notificationDto.getTime(), notificationDto.getTaskId()));
         return ResponseEntity.ok(notification);
     }
 

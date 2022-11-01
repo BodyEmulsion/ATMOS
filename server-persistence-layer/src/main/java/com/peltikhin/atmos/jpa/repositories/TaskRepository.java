@@ -1,8 +1,8 @@
 package com.peltikhin.atmos.jpa.repositories;
 
+import com.peltikhin.atmos.jpa.exceptions.TaskNotFoundException;
 import com.peltikhin.atmos.jpa.models.Project;
 import com.peltikhin.atmos.jpa.models.Task;
-import com.peltikhin.atmos.services.exceptions.TaskNotFoundException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

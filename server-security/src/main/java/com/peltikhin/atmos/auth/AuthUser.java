@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class AuthUser implements UserDetails {
+public class AuthUser implements UserDetails, UserProvider {
     private final User user;
     //This SonarLint issue doesn't react when I did what it recommended, and all works without that changes. I don't know what's wrong, and I did tired of figuring it up
     private final boolean authenticated;

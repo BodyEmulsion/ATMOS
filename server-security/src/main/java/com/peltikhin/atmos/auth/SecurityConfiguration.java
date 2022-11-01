@@ -1,8 +1,11 @@
 package com.peltikhin.atmos.auth;
 
+import com.peltikhin.atmos.jpa.PersistenceConfiguration;
 import com.peltikhin.atmos.jpa.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -22,6 +25,8 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
+@Import({PersistenceConfiguration.class})
+@ComponentScan
 public class SecurityConfiguration {
     private static void onSuccess(HttpServletRequest request,
                                   HttpServletResponse response,

@@ -1,6 +1,5 @@
 package com.peltikhin.atmos.services;
 
-import com.peltikhin.atmos.controllers.dto.TaskDto;
 import com.peltikhin.atmos.jpa.models.Task;
 import com.peltikhin.atmos.jpa.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -35,40 +34,39 @@ public class TaskService {
     }
 
     //TODO change the arguments to another class in order to reduce terrible coupling that I made here
-    public Task createTask(TaskDto taskDto) {
+    public Task createTask(String name, Long projectId, Long blockId, boolean isPlanned) {
         Task task = Task.builder()
-                .name(taskDto.getName())
-                .project(projectService.getProjectById(taskDto.getProjectId()))
+                .name(name)
+                .project(projectService.getProjectById(projectId))
                 .created(Date.from(Instant.now()))
                 .build();
-        if (taskDto.isPlanned()) {
-            task.setBlock(blockService.getBlockById(taskDto.getBlockId()));
+        if (isPlanned) {
+            task.setBlock(blockService.getBlockById(blockId));
         }
         //Somehow it's return Task with projectId null
         return taskRepository.save(task);
     }
 
     //TODO change the argument to another class in order to reduce terrible coupling that I made here
-    public Task updateTask(TaskDto updateTaskData) {
-        var task = taskRepository.findByIdOrError(updateTaskData.getId());
+    public Task updateTask(Long id, String name, Long projectId, Long blockId, boolean isPlanned) {
+        var task = taskRepository.findByIdOrError(id);
         validationService.validateUserAuthority(task);
-        task.setName(updateTaskData.getName());
-        if (!task.getProjectId().equals(updateTaskData.getProjectId()))
-            task.setProject(projectService.getProjectById(updateTaskData.getProjectId()));
-        updateTaskBlockIfNeeded(task, updateTaskData);
+        task.setName(name);
+        if (!task.getProjectId().equals(projectId))
+            task.setProject(projectService.getProjectById(projectId));
+        updateTaskBlockIfNeeded(task, isPlanned, blockId);
         return taskRepository.save(task);
     }
 
     //TODO It may be simplified(to one line...) by making block_id field updatable and insertable, I think
-    private void updateTaskBlockIfNeeded(Task task, TaskDto updateTaskData) {
-        boolean taskShouldBePlanned = updateTaskData.isPlanned();
+    private void updateTaskBlockIfNeeded(Task task, boolean taskShouldBePlanned, Long oldBlockId) {
         boolean taskIsPlannedNow = task.isPlanned();
         boolean taskPlannedAndNotEqual =
                 taskShouldBePlanned &&
                 taskIsPlannedNow &&
-                !task.getBlockId().equals(updateTaskData.getBlockId());
+                !task.getBlockId().equals(oldBlockId);
         if(taskPlannedAndNotEqual || taskShouldBePlanned && !taskIsPlannedNow)
-            task.setBlock(blockService.getBlockById(updateTaskData.getBlockId()));
+            task.setBlock(blockService.getBlockById(oldBlockId));
         if(!taskShouldBePlanned && taskIsPlannedNow)
             task.setBlock(null);
     }

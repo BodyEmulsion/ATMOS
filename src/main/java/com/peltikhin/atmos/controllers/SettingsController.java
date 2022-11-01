@@ -25,7 +25,7 @@ public class SettingsController {
 
     @PutMapping
     public ResponseEntity<SettingsDto> updateSettings(@RequestBody SettingsDto settingsDto) {
-        SettingsDto settings = settingsMapper.toDto(this.settingsService.updateSettings(settingsDto));
+        SettingsDto settings = settingsMapper.toDto(this.settingsService.updateSettings(settingsDto.getDayChangeTime()));
         return ResponseEntity.ok(settings);
     }
 }

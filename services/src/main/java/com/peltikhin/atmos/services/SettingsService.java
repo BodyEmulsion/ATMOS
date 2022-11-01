@@ -1,6 +1,5 @@
 package com.peltikhin.atmos.services;
 
-import com.peltikhin.atmos.controllers.dto.SettingsDto;
 import com.peltikhin.atmos.jpa.models.Settings;
 import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.SettingsRepository;
@@ -37,9 +36,9 @@ public class SettingsService {
         return settings.get();
     }
 
-    public Settings updateSettings(SettingsDto settingsDto) {
+    public Settings updateSettings(Time dayChangeTime) {
         Settings settings = getSettings();
-        settings.setDayChangeTime(settingsDto.getDayChangeTime());
+        settings.setDayChangeTime(dayChangeTime);
         return this.settingsRepository.save(settings);
     }
 }

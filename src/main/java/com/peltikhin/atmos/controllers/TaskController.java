@@ -35,13 +35,15 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto) {
-        TaskDto task = taskMapper.toDTO(taskService.createTask(taskDto));
+        TaskDto task = taskMapper.toDTO(taskService.createTask(
+                taskDto.getName(), taskDto.getProjectId(), taskDto.getBlockId(), taskDto.isPlanned()));
         return ResponseEntity.ok(task);
     }
 
     @PutMapping
     public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto taskDto) {
-        TaskDto task = taskMapper.toDTO(taskService.updateTask(taskDto));
+        TaskDto task = taskMapper.toDTO(taskService.updateTask(
+                taskDto.getId(), taskDto.getName(), taskDto.getProjectId(), taskDto.getBlockId(), taskDto.isPlanned()));
         return ResponseEntity.ok(task);
     }
 
