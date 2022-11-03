@@ -17,9 +17,9 @@ public class Project implements OwnerIdProvider{
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false, insertable = false)
     private User user;
-    @Column(name = "user_id", nullable = false, updatable = false, insertable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
     @OneToMany(mappedBy = "project")
     private Collection<Block> blocks;

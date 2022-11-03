@@ -2,7 +2,6 @@ package com.peltikhin.atmos.jpa.repositories;
 
 import com.peltikhin.atmos.jpa.exceptions.NotificationNotFoundException;
 import com.peltikhin.atmos.jpa.models.Notification;
-import com.peltikhin.atmos.jpa.models.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +14,7 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
         return findById(id).orElseThrow(() -> new NotificationNotFoundException(id));
     }
 
-    Collection<Notification> findAllByTask_Project_UserAndTimeBetween(User user, Date after, Date before);
+    Collection<Notification> findAllByTask_Project_User_IdAndTimeBetween(Long id, Date after, Date before);
+
+    Collection<Notification> findAllByTaskId(Long taskId);
 }

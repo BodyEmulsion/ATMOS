@@ -1,4 +1,4 @@
-package com.peltikhin.atmos.controllers.dto;
+package com.peltikhin.atmos.services.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

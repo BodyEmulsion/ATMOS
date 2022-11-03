@@ -19,14 +19,14 @@ public class Task implements OwnerIdProvider {
     private Long id;
     private String name;
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false, insertable = false, updatable = false)
     private Project project;
-    @Column(name = "project_id", insertable = false, updatable = false)
+    @Column(name = "project_id")
     private Long projectId;
     @ManyToOne
-    @JoinColumn(name = "block_id")
+    @JoinColumn(name = "block_id", insertable = false, updatable = false)
     private Block block;
-    @Column(name = "block_id", insertable = false, updatable = false)
+    @Column(name = "block_id")
     private Long blockId;
     @OneToMany(mappedBy = "task")
     private Collection<Notification> notifications;

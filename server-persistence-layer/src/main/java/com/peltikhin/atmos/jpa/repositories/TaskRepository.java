@@ -1,7 +1,6 @@
 package com.peltikhin.atmos.jpa.repositories;
 
 import com.peltikhin.atmos.jpa.exceptions.TaskNotFoundException;
-import com.peltikhin.atmos.jpa.models.Project;
 import com.peltikhin.atmos.jpa.models.Task;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -13,5 +12,5 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
     default Task findByIdOrError(Long id){
         return findById(id).orElseThrow(() -> new TaskNotFoundException(id));
     }
-    Collection<Task> findByProject(Project project);
+    Collection<Task> findByProjectId(Long id);
 }

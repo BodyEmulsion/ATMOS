@@ -2,73 +2,59 @@ package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.Task;
 import com.peltikhin.atmos.jpa.repositories.TaskRepository;
+import com.peltikhin.atmos.services.dto.TaskDto;
+import com.peltikhin.atmos.services.mappers.TaskMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
     private final ValidationService validationService;
-    private final ProjectService projectService;
-    private final BlockService blockService;
+    private final TaskMapper mapper;
 
-    public TaskService(TaskRepository taskRepository, ValidationService validationService, ProjectService projectService, BlockService blockService) {
+    public TaskService(TaskRepository taskRepository, ValidationService validationService, TaskMapper mapper) {
         this.taskRepository = taskRepository;
         this.validationService = validationService;
-        this.projectService = projectService;
-        this.blockService = blockService;
+        this.mapper = mapper;
     }
 
-    public Task getTaskById(Long id) {
+    public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findByIdOrError(id);
         validationService.validateUserAuthority(task);
-        return task;
+        return mapper.toDTO(task);
     }
 
-    public Collection<Task> getTasks(Long projectId) {
-        var project = projectService.getProjectById(projectId);
-        return project.getTasks();
+    public List<TaskDto> getTasks(Long projectId) {
+        Collection<Task> tasks = taskRepository.findByProjectId(projectId);
+        return tasks.stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
-    //TODO change the arguments to another class in order to reduce terrible coupling that I made here
-    public Task createTask(String name, Long projectId, Long blockId, boolean isPlanned) {
+    public TaskDto createTask(TaskDto taskDto) {
         Task task = Task.builder()
-                .name(name)
-                .project(projectService.getProjectById(projectId))
+                .name(taskDto.getName())
+                .projectId(taskDto.getProjectId())
                 .created(Date.from(Instant.now()))
+                .blockId(taskDto.getBlockId())
                 .build();
-        if (isPlanned) {
-            task.setBlock(blockService.getBlockById(blockId));
-        }
         //Somehow it's return Task with projectId null
-        return taskRepository.save(task);
+        return mapper.toDTO(taskRepository.save(task));
     }
 
     //TODO change the argument to another class in order to reduce terrible coupling that I made here
-    public Task updateTask(Long id, String name, Long projectId, Long blockId, boolean isPlanned) {
-        var task = taskRepository.findByIdOrError(id);
+    public TaskDto updateTask(TaskDto taskDto) {
+        //TODO change it to mapper.toEntity() after add annotation based validation?
+        var task = taskRepository.findByIdOrError(taskDto.getId());
         validationService.validateUserAuthority(task);
-        task.setName(name);
-        if (!task.getProjectId().equals(projectId))
-            task.setProject(projectService.getProjectById(projectId));
-        updateTaskBlockIfNeeded(task, isPlanned, blockId);
-        return taskRepository.save(task);
-    }
-
-    //TODO It may be simplified(to one line...) by making block_id field updatable and insertable, I think
-    private void updateTaskBlockIfNeeded(Task task, boolean taskShouldBePlanned, Long oldBlockId) {
-        boolean taskIsPlannedNow = task.isPlanned();
-        boolean taskPlannedAndNotEqual =
-                taskShouldBePlanned &&
-                taskIsPlannedNow &&
-                !task.getBlockId().equals(oldBlockId);
-        if(taskPlannedAndNotEqual || taskShouldBePlanned && !taskIsPlannedNow)
-            task.setBlock(blockService.getBlockById(oldBlockId));
-        if(!taskShouldBePlanned && taskIsPlannedNow)
-            task.setBlock(null);
+        task.setName(taskDto.getName());
+        task.setProjectId(taskDto.getProjectId());
+        task.setBlockId(taskDto.getProjectId());
+        return mapper.toDTO(taskRepository.save(task));
     }
 
     public void deleteTask(Long taskId) {

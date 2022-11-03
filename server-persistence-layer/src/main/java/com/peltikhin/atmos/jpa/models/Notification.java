@@ -16,9 +16,9 @@ public class Notification implements OwnerIdProvider{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "task_id", nullable = false)
+    @JoinColumn(name = "task_id", nullable = false, updatable = false, insertable = false)
     private Task task;
-    @Column(name = "task_id", nullable = false, updatable = false, insertable = false)
+    @Column(name = "task_id", nullable = false)
     private Long taskId;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date time;

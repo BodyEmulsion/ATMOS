@@ -1,46 +1,50 @@
 package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.Project;
-import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.ProjectRepository;
+import com.peltikhin.atmos.services.dto.ProjectDto;
+import com.peltikhin.atmos.services.dto.UserDto;
+import com.peltikhin.atmos.services.mappers.ProjectMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AuthService authService;
     private final ValidationService validationService;
+    private final ProjectMapper mapper;
 
-    public ProjectService(ProjectRepository projectRepository, AuthService authService, ValidationService validationService) {
+    public ProjectService(ProjectRepository projectRepository, AuthService authService, ValidationService validationService, ProjectMapper mapper) {
         this.projectRepository = projectRepository;
         this.authService = authService;
         this.validationService = validationService;
+        this.mapper = mapper;
     }
 
-    public Project getProjectById(Long id) {
+    public ProjectDto getProjectById(Long id) {
         Project project = this.projectRepository.findByIdOrError(id);
         validationService.validateUserAuthority(project);
-        return project;
+        return mapper.toDto(project);
     }
 
-    public Project createProject(String projectName) {
+    public ProjectDto createProject(String projectName) {
         //TODO Change method signature to Project or something else when project creation will require more atributes
-        User user = this.authService.getCurrentUser();
+        UserDto user = this.authService.getCurrentUser();
         var project = Project.builder()
                 .name(projectName)
-                .user(user)
+                .userId(user.getId())
                 .build();
-        return this.projectRepository.save(project);
+        return mapper.toDto(this.projectRepository.save(project));
     }
 
-    public Project updateProject(Long projectId, String name) {
-        //TODO Change method signature to Project or something else when project updation will require more atributes
-        var project = this.projectRepository.findByIdOrError(projectId);
-        project.setName(name);
+    public ProjectDto updateProject(ProjectDto projectDto) {
+        Project project = this.projectRepository.findByIdOrError(projectDto.getId());
+        project.setName(project.getName());
         validationService.validateUserAuthority(project);
-        return this.projectRepository.save(project);
+        return mapper.toDto(this.projectRepository.save(project));
     }
 
     public void deleteProject(Long id) {
@@ -49,9 +53,9 @@ public class ProjectService {
         this.projectRepository.delete(project);
     }
 
-    public Collection<Project> getAllProjects() {
+    public List<ProjectDto> getAllProjects() {
         var user = this.authService.getCurrentUser();
         //TODO make sure that it's ok, because I think I should be able to read it from user entity, but It requires to refresh entity by EntityManager
-        return this.projectRepository.findByUser(user);
+        return this.projectRepository.findByUserId(user.getId()).stream().map(mapper::toDto).collect(Collectors.toList());
     }
 }

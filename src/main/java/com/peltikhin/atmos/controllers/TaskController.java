@@ -1,49 +1,42 @@
 package com.peltikhin.atmos.controllers;
 
-import com.peltikhin.atmos.controllers.dto.TaskDto;
-import com.peltikhin.atmos.controllers.mappers.TaskMapper;
 import com.peltikhin.atmos.services.TaskService;
+import com.peltikhin.atmos.services.dto.TaskDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
     private final TaskService taskService;
-    private final TaskMapper taskMapper;
-    public TaskController(TaskService taskService, TaskMapper taskMapper) {
+
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.taskMapper = taskMapper;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> getTask(@PathVariable Long id) {
-        TaskDto task = taskMapper.toDTO(taskService.getTaskById(id));
+        TaskDto task = taskService.getTaskById(id);
         return ResponseEntity.ok(task);
     }
 
     @GetMapping
     public ResponseEntity<Collection<TaskDto>> getTasks(@RequestParam Long projectId) {
-        Collection<TaskDto> tasks = taskService.getTasks(projectId).stream()
-                .map(taskMapper::toDTO)
-                .collect(Collectors.toList());
+        Collection<TaskDto> tasks = taskService.getTasks(projectId);
         return ResponseEntity.ok(tasks);
     }
 
     @PostMapping
     public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto taskDto) {
-        TaskDto task = taskMapper.toDTO(taskService.createTask(
-                taskDto.getName(), taskDto.getProjectId(), taskDto.getBlockId(), taskDto.isPlanned()));
+        TaskDto task = taskService.createTask(taskDto);
         return ResponseEntity.ok(task);
     }
 
     @PutMapping
     public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto taskDto) {
-        TaskDto task = taskMapper.toDTO(taskService.updateTask(
-                taskDto.getId(), taskDto.getName(), taskDto.getProjectId(), taskDto.getBlockId(), taskDto.isPlanned()));
+        TaskDto task = taskService.updateTask(taskDto);
         return ResponseEntity.ok(task);
     }
 

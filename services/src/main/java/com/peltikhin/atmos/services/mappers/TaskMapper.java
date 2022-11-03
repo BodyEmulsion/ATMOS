@@ -1,6 +1,6 @@
-package com.peltikhin.atmos.controllers.mappers;
+package com.peltikhin.atmos.services.mappers;
 
-import com.peltikhin.atmos.controllers.dto.TaskDto;
+import com.peltikhin.atmos.services.dto.TaskDto;
 import com.peltikhin.atmos.jpa.models.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

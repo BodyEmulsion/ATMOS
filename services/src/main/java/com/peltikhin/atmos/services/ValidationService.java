@@ -1,7 +1,7 @@
 package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.OwnerIdProvider;
-import com.peltikhin.atmos.jpa.models.User;
+import com.peltikhin.atmos.services.dto.UserDto;
 import com.peltikhin.atmos.services.exceptions.NotEnoughAuthoritiesException;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class ValidationService {
         this.authService = authService;
     }
 
-    private static boolean isTaskBelongToUser(OwnerIdProvider entity, User user) {
+    private static boolean isTaskBelongToUser(OwnerIdProvider entity, UserDto user) {
         return entity.getOwnerId().equals(user.getId());
     }
 

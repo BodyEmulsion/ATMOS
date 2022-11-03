@@ -1,8 +1,10 @@
 package com.peltikhin.atmos.services;
 
 import com.peltikhin.atmos.jpa.models.Settings;
-import com.peltikhin.atmos.jpa.models.User;
 import com.peltikhin.atmos.jpa.repositories.SettingsRepository;
+import com.peltikhin.atmos.services.dto.SettingsDto;
+import com.peltikhin.atmos.services.dto.UserDto;
+import com.peltikhin.atmos.services.mappers.SettingsMapper;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -13,32 +15,35 @@ import java.util.Optional;
 public class SettingsService {
     private final SettingsRepository settingsRepository;
     private final AuthService authService;
+    private final SettingsMapper mapper;
 
-    public SettingsService(SettingsRepository settingsRepository, AuthService authService) {
+    public SettingsService(SettingsRepository settingsRepository, AuthService authService, SettingsMapper mapper) {
         this.settingsRepository = settingsRepository;
         this.authService = authService;
+        this.mapper = mapper;
     }
 
-    private static Settings createDefaultSettings() {
-        return Settings.builder()
-                .dayChangeTime(Time.valueOf(LocalTime.MIDNIGHT))
-                .build();
+    public SettingsDto getSettings() {
+        Settings settings = getSettingsOrCreateDefault();
+        return mapper.toDto(settings);
     }
 
-    public Settings getSettings() {
-        User user = authService.getCurrentUser();
-        Optional<Settings> settings = settingsRepository.findByUser(user);
-        if (settings.isEmpty()) {
-            Settings defaultSettings = createDefaultSettings();
-            defaultSettings.setUser(user);
-            settings = Optional.of(settingsRepository.save(defaultSettings));
-        }
-        return settings.get();
-    }
-
-    public Settings updateSettings(Time dayChangeTime) {
-        Settings settings = getSettings();
+    public SettingsDto updateSettings(Time dayChangeTime) {
+        Settings settings = getSettingsOrCreateDefault();
         settings.setDayChangeTime(dayChangeTime);
-        return this.settingsRepository.save(settings);
+        return mapper.toDto(this.settingsRepository.save(settings));
+    }
+
+    private Settings getSettingsOrCreateDefault() {
+        UserDto user = authService.getCurrentUser();
+        Optional<Settings> result = settingsRepository.findByUserId(user.getId());
+        if (result.isEmpty()) {
+            Settings defaultSettings = Settings.builder()
+                    .dayChangeTime(Time.valueOf(LocalTime.MIDNIGHT))
+                    .userId(user.getId())
+                    .build();
+            result = Optional.of(settingsRepository.save(defaultSettings));
+        }
+        return result.get();
     }
 }

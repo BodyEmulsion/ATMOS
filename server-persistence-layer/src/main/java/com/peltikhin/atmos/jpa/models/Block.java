@@ -17,8 +17,10 @@ public class Block implements OwnerIdProvider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false, insertable = false, updatable = false)
     private Project project;
+    @Column(name = "project_id")
+    private Long projectId;
     @OneToMany(mappedBy = "block")
     private Collection<Task> tasks;
     private Date timeStart;

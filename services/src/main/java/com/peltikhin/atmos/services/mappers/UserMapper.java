@@ -1,6 +1,6 @@
-package com.peltikhin.atmos.controllers.mappers;
+package com.peltikhin.atmos.services.mappers;
 
-import com.peltikhin.atmos.controllers.dto.UserDto;
+import com.peltikhin.atmos.services.dto.UserDto;
 import com.peltikhin.atmos.jpa.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

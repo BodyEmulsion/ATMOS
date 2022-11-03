@@ -17,6 +17,8 @@ public class Settings {
     private Long id;
     private Time dayChangeTime;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private User user;
+    @Column(name = "user_id")
+    private Long userId;
 }

@@ -1,8 +1,8 @@
 package com.peltikhin.atmos.controllers;
 
 import com.peltikhin.atmos.AbstractIntegrationTest;
-import com.peltikhin.atmos.controllers.dto.RegisterDto;
-import com.peltikhin.atmos.controllers.dto.UserDto;
+import com.peltikhin.atmos.services.dto.RegisterDto;
+import com.peltikhin.atmos.services.dto.UserDto;
 import com.peltikhin.atmos.jpa.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

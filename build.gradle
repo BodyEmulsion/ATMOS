@@ -20,17 +20,14 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.testcontainers:postgresql:1.17.3'
 	testImplementation 'org.testcontainers:junit-jupiter:1.17.3'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
-	implementation "org.mapstruct:mapstruct:1.4.2.Final"
-	annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
 	implementation project(":services")
 	implementation project(":server-security")
+	testImplementation project(":server-persistence-layer")
 }
 
 tasks.named('test') {
