@@ -1,6 +1,6 @@
 package com.peltikhin.atmos.auth;
 
-import com.peltikhin.atmos.auth.exceptions.NotEnoughAuthoritiesException;
+import com.peltikhin.atmos.exceptions.NotEnoughAuthoritiesException;
 import com.peltikhin.atmos.jpa.repositories.BlockRepository;
 import com.peltikhin.atmos.jpa.repositories.NotificationRepository;
 import com.peltikhin.atmos.jpa.repositories.ProjectRepository;

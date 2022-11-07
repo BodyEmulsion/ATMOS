@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 	implementation project(":services")
 	implementation project(":server-security")
+	implementation project(":commons")
 	testImplementation project(":server-persistence-layer")
 }
 

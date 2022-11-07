@@ -1,6 +1,6 @@
 package com.peltikhin.atmos.jpa.repositories;
 
-import com.peltikhin.atmos.jpa.exceptions.NotificationNotFoundException;
+import com.peltikhin.atmos.exceptions.NotificationNotFoundException;
 import com.peltikhin.atmos.jpa.models.Notification;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

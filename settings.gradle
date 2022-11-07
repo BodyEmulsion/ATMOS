@@ -2,4 +2,5 @@ rootProject.name = 'atmos'
 include 'server-persistence-layer'
 include 'server-security'
 include 'services'
+include 'commons'
 

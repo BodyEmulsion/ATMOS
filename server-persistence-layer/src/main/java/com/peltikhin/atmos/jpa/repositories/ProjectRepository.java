@@ -1,6 +1,6 @@
 package com.peltikhin.atmos.jpa.repositories;
 
-import com.peltikhin.atmos.jpa.exceptions.ProjectNotFoundException;
+import com.peltikhin.atmos.exceptions.ProjectNotFoundException;
 import com.peltikhin.atmos.jpa.models.Project;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

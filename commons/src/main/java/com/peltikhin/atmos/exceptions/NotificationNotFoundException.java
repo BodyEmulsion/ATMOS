@@ -1,4 +1,4 @@
-package com.peltikhin.atmos.jpa.exceptions;
+package com.peltikhin.atmos.exceptions;
 
 //TODO write exception handler in controllers
 public class NotificationNotFoundException extends RuntimeException {

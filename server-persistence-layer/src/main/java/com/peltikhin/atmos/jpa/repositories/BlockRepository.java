@@ -1,6 +1,6 @@
 package com.peltikhin.atmos.jpa.repositories;
 
-import com.peltikhin.atmos.jpa.exceptions.BlockNotFoundException;
+import com.peltikhin.atmos.exceptions.BlockNotFoundException;
 import com.peltikhin.atmos.jpa.models.Block;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
