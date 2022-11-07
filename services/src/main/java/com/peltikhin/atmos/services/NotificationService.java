@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final AuthService authService;
-    private final ValidationService validationService;
     private final NotificationMapper mapper;
 
-    public NotificationService(NotificationRepository notificationRepository, AuthService authService, ValidationService validationService, NotificationMapper mapper) {
+    public NotificationService(NotificationRepository notificationRepository, AuthService authService, NotificationMapper mapper) {
         this.notificationRepository = notificationRepository;
         this.authService = authService;
-        this.validationService = validationService;
         this.mapper = mapper;
     }
 
@@ -32,7 +30,6 @@ public class NotificationService {
 
     public NotificationDto getNotification(Long notificationId) {
         Notification notification = notificationRepository.findByIdOrError(notificationId);
-        validationService.validateUserAuthority(notification);
         return mapper.toDto(notification);
     }
 
@@ -53,7 +50,6 @@ public class NotificationService {
 
     public NotificationDto updateNotification(NotificationDto notificationDto) {
         Notification notification = this.notificationRepository.findByIdOrError(notificationDto.getId());
-        validationService.validateUserAuthority(notification);
         notification.setTime(notificationDto.getTime());
         notification.setTaskId(notificationDto.getTaskId());
         return mapper.toDto(notificationRepository.save(notification));
@@ -61,7 +57,6 @@ public class NotificationService {
 
     public void deleteNotification(Long id) {
         Notification notification = this.notificationRepository.findByIdOrError(id);
-        validationService.validateUserAuthority(notification);
         notificationRepository.delete(notification);
     }
 }

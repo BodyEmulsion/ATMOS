@@ -14,19 +14,16 @@ import java.util.stream.Collectors;
 public class BlockService {
     private final BlockRepository blockRepository;
     private final AuthService authService;
-    private final ValidationService validationService;
     private final BlockMapper mapper;
 
-    public BlockService(BlockRepository blockRepository, AuthService authService, ValidationService validationService, BlockMapper mapper) {
+    public BlockService(BlockRepository blockRepository, AuthService authService, BlockMapper mapper) {
         this.blockRepository = blockRepository;
         this.authService = authService;
-        this.validationService = validationService;
         this.mapper = mapper;
     }
 
     public BlockDto getBlockById(Long id) {
         Block block = this.blockRepository.findByIdOrError(id);
-        validationService.validateUserAuthority(block);
         return mapper.toDto(block);
     }
 
@@ -51,7 +48,6 @@ public class BlockService {
 
     public BlockDto updateBlock(BlockDto blockDto) {
         Block block = this.blockRepository.findByIdOrError(blockDto.getId());
-        validationService.validateUserAuthority(block);
         block.setProjectId(blockDto.getProjectId());
         block.setTimeStart(blockDto.getTimeStart());
         block.setTimeEnd(blockDto.getTimeEnd());
@@ -60,7 +56,6 @@ public class BlockService {
 
     public void deleteBlock(Long id) {
         var block = this.blockRepository.findByIdOrError(id);
-        validationService.validateUserAuthority(block);
         this.blockRepository.delete(block);
     }
 }

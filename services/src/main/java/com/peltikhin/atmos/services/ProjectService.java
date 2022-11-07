@@ -14,19 +14,16 @@ import java.util.stream.Collectors;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AuthService authService;
-    private final ValidationService validationService;
     private final ProjectMapper mapper;
 
-    public ProjectService(ProjectRepository projectRepository, AuthService authService, ValidationService validationService, ProjectMapper mapper) {
+    public ProjectService(ProjectRepository projectRepository, AuthService authService, ProjectMapper mapper) {
         this.projectRepository = projectRepository;
         this.authService = authService;
-        this.validationService = validationService;
         this.mapper = mapper;
     }
 
     public ProjectDto getProjectById(Long id) {
         Project project = this.projectRepository.findByIdOrError(id);
-        validationService.validateUserAuthority(project);
         return mapper.toDto(project);
     }
 
@@ -43,19 +40,17 @@ public class ProjectService {
     public ProjectDto updateProject(ProjectDto projectDto) {
         Project project = this.projectRepository.findByIdOrError(projectDto.getId());
         project.setName(project.getName());
-        validationService.validateUserAuthority(project);
         return mapper.toDto(this.projectRepository.save(project));
     }
 
     public void deleteProject(Long id) {
         Project project = this.projectRepository.findByIdOrError(id);
-        validationService.validateUserAuthority(project);
         this.projectRepository.delete(project);
     }
 
     public List<ProjectDto> getAllProjects() {
         var user = this.authService.getCurrentUser();
-        //TODO make sure that it's ok, because I think I should be able to read it from user entity, but It requires to refresh entity by EntityManager
         return this.projectRepository.findByUserId(user.getId()).stream().map(mapper::toDto).collect(Collectors.toList());
+        //ToList() method didn't found dy IDE somehow, and I don't have time to deal with it. I'm really sorry, Sonarlint
     }
 }

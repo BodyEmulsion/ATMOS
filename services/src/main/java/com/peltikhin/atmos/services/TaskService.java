@@ -15,18 +15,15 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
-    private final ValidationService validationService;
     private final TaskMapper mapper;
 
-    public TaskService(TaskRepository taskRepository, ValidationService validationService, TaskMapper mapper) {
+    public TaskService(TaskRepository taskRepository, TaskMapper mapper) {
         this.taskRepository = taskRepository;
-        this.validationService = validationService;
         this.mapper = mapper;
     }
 
     public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findByIdOrError(id);
-        validationService.validateUserAuthority(task);
         return mapper.toDTO(task);
     }
 
@@ -50,7 +47,6 @@ public class TaskService {
     public TaskDto updateTask(TaskDto taskDto) {
         //TODO change it to mapper.toEntity() after add annotation based validation?
         var task = taskRepository.findByIdOrError(taskDto.getId());
-        validationService.validateUserAuthority(task);
         task.setName(taskDto.getName());
         task.setProjectId(taskDto.getProjectId());
         task.setBlockId(taskDto.getProjectId());
@@ -59,7 +55,6 @@ public class TaskService {
 
     public void deleteTask(Long taskId) {
         var task = taskRepository.findByIdOrError(taskId);
-        validationService.validateUserAuthority(task);
         taskRepository.delete(task);
     }
 }
