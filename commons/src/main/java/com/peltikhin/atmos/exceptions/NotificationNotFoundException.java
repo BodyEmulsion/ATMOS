@@ -1,7 +1,6 @@
 package com.peltikhin.atmos.exceptions;
 
-//TODO write exception handler in controllers
-public class NotificationNotFoundException extends RuntimeException {
+public class NotificationNotFoundException extends NotFoundException {
     public NotificationNotFoundException(Long id) {
         super(String.format("Project with id=%d not found", id));
     }
