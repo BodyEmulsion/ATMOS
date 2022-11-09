@@ -8,4 +8,7 @@ ATMOS is a pet-project that I create to improve and proof my programming skills.
 Like any other programmer, I do my own project if existing projects don’t do what I need (even if they do)
 
 ## WHEN
-Now I’m developing a database schema and thinking about a list of MVP functions, so not soon.
+Who know?
+
+## DOCS
+My English skills aren’t enough to write the documentation in good time, so you can read it in Russian [here](README_RU.md)
